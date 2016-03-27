@@ -15,4 +15,8 @@ Installed sigma.coreos-bootstrap from ansible-galaxy and moved it to roles to
 keep it in the project.
 Added roles in inventory.
 
+# Deploy
 
+```
+ansible-playbook -v --private-key=~/.ssh/<private key> --user=root  --extra-vars "group=dev-mesos state=present" site.yml
+```
