@@ -1,19 +1,34 @@
 ---
-
-- hosts: localhost
+- name: Manage master nodes
+  hosts: localhost
   gather_facts: False
   vars:
     region: LON
-    count: 6
     exact_count: true
     flavor: 4
     image: 40155f16-21d4-4ac1-ad65-c409d94b8c7c
     key_name: "{{keyname}}"
     state: present
   roles:
-    - rackspace
+      - { role: rackspace, count: 3, group: "{{env}}-master" }
 
-- hosts: "{{group}}"
+- name: Manage slave nodes
+  hosts: localhost
+  gather_facts: False
+  vars:
+    region: LON
+    exact_count: true
+    flavor: 4
+    image: 40155f16-21d4-4ac1-ad65-c409d94b8c7c
+    key_name: "{{keyname}}"
+    state: present
+  roles:
+      - { role: rackspace, count: 3, group: "{{env}}-slave" }
+
+
+- hosts:
+    - "{{env}}-master"
+    - "{{env}}-slave"
   gather_facts: False
   roles:
     - sigma.coreos-bootstrap
