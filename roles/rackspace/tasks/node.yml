@@ -1,0 +1,32 @@
+---
+
+- name: Ensure server {{state}}
+  local_action:
+    module: rax
+    name: "{{item.group}}-%03d"
+    count: "{{item.count}}"
+    region: "{{region}}"
+    exact_count: true
+    group: "{{item.group}}"
+    flavor: "{{flavor}}" 
+    image: "{{image}}"
+    key_name: "{{key_name}}"
+    wait: yes
+    state: "{{state}}"
+    networks:
+      - private
+      - public
+  with_items: "{{nodes}}"
+  register: rax
+
+- name: Add the instances we created (by public IP) to their group
+  local_action:
+    module: add_host
+    hostname: "{{item.1.name}}"
+    ansible_host: "{{item.1.rax_accessipv4}}"
+    ansible_ssh_user: core
+    ansible_python_interpreter: "PATH=/home/core/bin:$PATH python"
+    groups: "{{item.1.rax_metadata.group}}"
+  with_subelements:
+    - "{{rax.results}}"
+    - instances

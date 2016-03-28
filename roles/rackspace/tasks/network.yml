@@ -1,0 +1,15 @@
+---
+
+- name: Ensure Network {{state}}
+  vars:
+    state: present
+  local_action:
+    module: rax_network
+    label: "{{item.name}}"
+    cidr: "{{item.cidr}}"
+    region: "{{region}}"
+    state: "{{state}}"
+  with_items: "{{networks}}"
+  register: rax_network
+
+
