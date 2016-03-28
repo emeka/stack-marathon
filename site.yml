@@ -5,26 +5,42 @@
   roles:
     - role: rackspace
       networks:
-        - name: "{{env}}-network"
+        - name: "{{env}}-dmz"
+          cidr: "192.168.2.0/24"
+        - name: "{{env}}-private"
           cidr: "192.168.3.0/24"
       nodes:
         - count: 3
           group: "{{env}}-master"
+          networks:
+            - public
+            - private
+            - "{{env}}-dmz"
+            - "{{env}}-private"
         - count: 3
           group: "{{env}}-slave"
-
-- hosts: 
+          networks:
+            - public
+            - private
+            - "{{env}}-dmz"
+            - "{{env}}-private"
+            
+- name: Bootstrap CoreOS
+  hosts: 
     - "{{env}}-master"
     - "{{env}}-slave"
   gather_facts: False
   roles:
     - sigma.coreos-bootstrap
 
-- hosts: "{{env}}-master"
+- name: Config Master Nodes    
+  hosts: "{{env}}-master"
   roles:
     - master
 
-- hosts: "{{env}}-slave"
+
+- name: Config Slave Nodes
+  hosts: "{{env}}-slave"
   roles:
     - slave
 

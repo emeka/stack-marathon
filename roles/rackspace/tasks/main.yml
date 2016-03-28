@@ -1,6 +1,8 @@
 ---
 
-- include: network.yml
-- include: node.yml
-   
+- include: create.yml
+  when: state == "present"
+
+- include: destroy.yml
+  when: state == "absent"
 
