@@ -5,10 +5,12 @@ Ansible script to deploy Marathon on Rackspace using CoreOS.
 
 You will need Python 2.7.x and pip
 
+```
 pip install ansible
 pip install pyrax
 pip install --upgrade rackspace-novaclient
 pip install os_virtual_interfacesv2_python_novaclient_ext --upgrade
+```
 
 
 # Rackspace
